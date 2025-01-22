@@ -1,0 +1,15 @@
+{
+  "extends": "./node_modules/@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": true,
+    "rootDir": "src",
+    "removeComments": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "types": ["node"],
+    "lib": ["ESNext"]
+  },
+  "include": ["src/**/*.ts"]
+}

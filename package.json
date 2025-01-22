@@ -1,0 +1,50 @@
+{
+  "name": "haber",
+  "version": "1.0.0",
+  "description": "An application that allows users to send news via Discord.",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node -e 'console.clear()' && bun run ./src/index.ts"
+  },
+  "keywords": ["discord", "breakingnews"],
+  "author": "Roman",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/bytes": "^3.1.4",
+    "@types/eslint__js": "^8.42.3",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.17.5",
+    "@wyntine/prettier-config": "^1.1.1",
+    "prettier-eslint": "^16.3.0",
+    "prisma": "^6.2.1",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^7.18.0"
+  },
+  "prettier": "@wyntine/prettier-config",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "homepage": "https://github.com/romanbaba/Haber#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romanbaba/Haber.git"
+  },
+  "bugs": {
+    "url": "https://github.com/romanbaba/Haber/issues"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.17.13",
+    "@wyntine/verifier": "1.0.0-beta.3",
+    "bytes": "^3.1.2",
+    "chalk": "^5.3.0",
+    "discord.js": "^14.16.3",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21"
+  }
+}
