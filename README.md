@@ -17,4 +17,4 @@ tocuh .env && tocuh config.yml
 ```
 
 ## Help
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][https://discord.gg/r3AdKRY9Ha].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server](https://discord.gg/r3AdKRY9Ha).
