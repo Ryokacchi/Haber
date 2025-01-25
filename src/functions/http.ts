@@ -1,4 +1,4 @@
-export interface ServiceData {
+export interface CategoryData {
   id: string;
   name: string;
   description: string;
@@ -6,7 +6,7 @@ export interface ServiceData {
 
 /**
  * Returns an array of predefined news services with their details
- * @returns {ServiceData[]} An array of Service objects containing news categories
+ * @returns {CategoryData[]} An array of Service objects containing news categories
  * @example
  * const services = getServices();
  * // Returns array of services like:
@@ -19,7 +19,7 @@ export interface ServiceData {
  * //   ...
  * // ]
  */
-export function getServices(): ServiceData[] {
+export function getCategories(): CategoryData[] {
   return [
     { id: "ensonhaber", name: "Resmî Kaynak", description: "Haberlerin doğruluğu ve güvenilirliği için yalnızca onaylanmış ve resmî kaynaklardan alınan içerikler paylaşılır." },
     { id: "mansetler", name: "Manşetler", description: "Günün öne çıkan ve dikkat çeken haber başlıkları burada!" },
