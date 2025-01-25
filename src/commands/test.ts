@@ -1,5 +1,5 @@
 import { Command } from "../classes/command.js";
-import { getCategory } from "../utils/rows.js";
+import { getCategory, getChannel } from "../utils/rows.js";
 
 export default new Command({
   data: (builder) => builder
@@ -8,6 +8,6 @@ export default new Command({
   async execute(interaction) {
     
 
-    await interaction.editReply({ components: [getCategory()] });
+    await interaction.editReply({ components: [getCategory(), getChannel({ interaction })] });
   }
 });
