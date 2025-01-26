@@ -1,6 +1,7 @@
 import { ActionRowBuilder, ChatInputCommandInteraction, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
-import { getChannels } from "../functions/guilds.js";
+import { getChannels, getRoles } from "../functions/guilds.js";
 import { getCategories } from "../functions/http.js";
+import { trim } from "../functions/strings.js";
 import { ids } from "./constants.js";
 
 /**
@@ -22,7 +23,8 @@ export const getCategory = ({ id = ids.none, array = [] }: { id?: string; array?
     .map((category) =>
       new StringSelectMenuOptionBuilder()
         .setLabel(category.name)
-        .setEmoji(id === category.id ? "<:selected_label:1287491109794091069>" : "<:label:1287490763822731265>")
+        .setDescription(trim(category.description, 100))
+        .setEmoji(category.emoji ? id === category.id ? "✅" : category.emoji : id === category.id ? "<:selected_label:1287491109794091069>" : "<:label:1287490763822731265>")
         .setDefault(id === category.id)
         .setValue(category.id)
     );
@@ -90,6 +92,72 @@ export const getChannel = ({ id = ids.none, interaction }: { id?: string; intera
         : []),
       ...options
     );
+
+  return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
+};
+
+/**
+ * Generates a role selection menu for a Discord interaction.
+ *
+ * @param {Object} params - The parameters for the function.
+ * @param {string} [params.id=ids.none] - The ID of the selected role.
+ * @param {ChatInputCommandInteraction} params.interaction - The Discord interaction object.
+ * @returns {ActionRowBuilder<StringSelectMenuBuilder>} - An action row containing the role selection menu.
+ */
+export const getRole = ({ id = ids.none, interaction }: { id?: string; interaction: ChatInputCommandInteraction; }): ActionRowBuilder<StringSelectMenuBuilder> => {
+  const roles = getRoles(interaction.guild).slice(0, 20);
+
+  const defaultOptions = [
+    {
+      label: "Rol Ayarlaması",
+      emoji: "<:role_config:1255187760923541504>",
+      isDefault: id === ids.none,
+      value: ids.none,
+    },
+    {
+      label: "Kimseyi Bahsetme",
+      description: "Bunun yerine hiç kimseyi bahsetmemeyi seçin.",
+      emoji: "<:noo:1281242968937730048>",
+      isDefault: id === "0",
+      value: "0",
+    },
+    {
+      label: "@everyone",
+      emoji: "<:world:1272984452380889221>",
+      isDefault: id === "1",
+      value: "1",
+    },
+    {
+      label: "@here",
+      emoji: "<:world:1272984452380889221>",
+      isDefault: id === "2",
+      value: "2",
+    },
+  ];
+
+  const defaultMenuOptions = defaultOptions.map(({ label, emoji, description, isDefault, value }) =>
+    new StringSelectMenuOptionBuilder()
+      .setLabel(label)
+      .setEmoji(emoji)
+      .setDefault(isDefault)
+      .setValue(value)
+      .setDescription(description ?? " ")
+  );
+
+  const roleOptions = roles.map((role) =>
+    new StringSelectMenuOptionBuilder()
+      .setLabel(role.name)
+      .setEmoji(
+        id === role.id
+          ? "<:selected_role:1272980146424385711>"
+          : "<:role:1272979974932136099>"
+      )
+      .setValue(role.id)
+  );
+
+  const menuBuilder = new StringSelectMenuBuilder()
+    .setCustomId("roleId")
+    .addOptions(...defaultMenuOptions, ...roleOptions);
 
   return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
 };

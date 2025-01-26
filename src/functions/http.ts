@@ -1,5 +1,6 @@
 export interface CategoryData {
   id: string;
+  emoji?: string;
   name: string;
   description: string;
 }
@@ -13,15 +14,16 @@ export interface CategoryData {
  * // [
  * //   { 
  * //     id: "ensonhaber",
- * //     name: "Resmî Kaynak",
- * //     description: "Haberlerin doğruluğu ve güvenilirliği için..."
+ * //     name: "En Son Haberler",
+ * //     description: "Günün öne çıkan haber başlıkları..."
  * //   },
  * //   ...
  * // ]
  */
 export function getCategories(): CategoryData[] {
   return [
-    { id: "ensonhaber", name: "Resmî Kaynak", description: "Haberlerin doğruluğu ve güvenilirliği için yalnızca onaylanmış ve resmî kaynaklardan alınan içerikler paylaşılır." },
+    { id: "@custom/haber", emoji: "🌐", name: "Resmî Kaynak", description: "Haberlerin doğruluğu ve güvenilirliği için yalnızca onaylanmış ve resmî kaynaklardan alınan içerikler paylaşılır." },
+    { id: "ensonhaber", name: "En Son Haberler", description: "Günün öne çıkan haber başlıkları burada!" },
     { id: "mansetler", name: "Manşetler", description: "Günün öne çıkan ve dikkat çeken haber başlıkları burada!" },
     { id: "gundem", name: "Gündem", description: "Kamuoyunun en çok konuştuğu ve ilgiyle takip ettiği konular burada!" },
     { id: "politika", name: "Politika", description: "Yerel ve küresel siyasetteki en önemli gelişmeler ve analizler burada!" },
