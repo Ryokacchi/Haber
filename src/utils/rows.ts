@@ -1,4 +1,5 @@
-import { ActionRowBuilder, ChatInputCommandInteraction, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
+import { buttonRow } from "../functions/general.js";
 import { getChannels, getRoles } from "../functions/guilds.js";
 import { getCategories } from "../functions/http.js";
 import { trim } from "../functions/strings.js";
@@ -160,4 +161,23 @@ export const getRole = ({ id = ids.none, interaction }: { id?: string; interacti
     .addOptions(...defaultMenuOptions, ...roleOptions);
 
   return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
+};
+
+/**
+ * Creates a "Save Changes" button with a custom ID, label, emoji, and primary style.
+ *
+ * @returns {ActionRowBuilder<ButtonBuilder>} - An action row containing the "Save Changes" button.
+ *
+ * @example
+ * // Generate the save button row
+ * const saveButtonRow = getSave();
+ * // Use this row in your Discord bot's message
+ * await interaction.reply({ content: "Make changes and save:", components: [saveButtonRow] });
+ */
+export const getSave = (): ActionRowBuilder<ButtonBuilder> => {
+  const btn = new ButtonBuilder()
+    .setCustomId("save")
+    .setLabel("Değişiklikleri Kaydet")
+    .setStyle(ButtonStyle.Primary);
+  return buttonRow([ btn ]);
 };
