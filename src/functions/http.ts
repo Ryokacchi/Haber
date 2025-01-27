@@ -22,7 +22,6 @@ export interface CategoryData {
  */
 export function getCategories(): CategoryData[] {
   return [
-    { id: "@custom/haber", emoji: "🌐", name: "Resmî Kaynak", description: "Haberlerin doğruluğu ve güvenilirliği için yalnızca onaylanmış ve resmî kaynaklardan alınan içerikler paylaşılır." },
     { id: "ensonhaber", name: "En Son Haberler", description: "Günün öne çıkan haber başlıkları burada!" },
     { id: "mansetler", name: "Manşetler", description: "Günün öne çıkan ve dikkat çeken haber başlıkları burada!" },
     { id: "gundem", name: "Gündem", description: "Kamuoyunun en çok konuştuğu ve ilgiyle takip ettiği konular burada!" },

@@ -14,3 +14,22 @@
  * trim("Hello, World!", 8); // "Hello..."
  */
 export const trim = (str: string, max: number): string => str.length > max ? `${str.slice(0, max - 3)}...` : str;
+
+/**
+ * Replaces the last comma in a string with " ve".
+ * This is typically used for creating a more natural list separator in a sentence.
+ *
+ * @param {string} str - The input string containing commas.
+ * @returns {string} - The modified string with the last comma replaced by " ve".
+ */
+export const and = (str: string): string => str.replace(/,(?=[^,]*$)/, " ve");
+
+
+/**
+ * Retrieves the element from an array based on the provided state index.
+ *
+ * @param {number} state - The index of the element to retrieve from the array.
+ * @param {string[]} array - The array containing the elements.
+ * @returns {string} - The element from the array at the specified index.
+ */
+export const getResponseByState = (state: number, array: string[]): string => array.reverse()[state] ?? "";

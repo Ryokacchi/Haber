@@ -67,6 +67,7 @@ export const getChannel = ({ id = ids.none, interaction }: { id?: string; intera
           ? "<:selected_channel:1273024042877845524>"
           : "<:channel:1273024021155283005>"
       )
+      .setDefault(id === channel.id)
       .setValue(channel.id)
   );
 
@@ -153,6 +154,7 @@ export const getRole = ({ id = ids.none, interaction }: { id?: string; interacti
           ? "<:selected_role:1272980146424385711>"
           : "<:role:1272979974932136099>"
       )
+      .setDefault(id === role.id)
       .setValue(role.id)
   );
 
