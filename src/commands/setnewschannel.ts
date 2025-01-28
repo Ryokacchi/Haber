@@ -12,8 +12,8 @@ import { ErrorView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/view
 export default new Command({
   data: (builder) =>
     builder
-      .setName("test")
-      .setDescription("touicho touchio??"),
+      .setName("setnewschannel")
+      .setDescription("Sonsuz haber akışımızda, istediğin kategoriyi seçerek, dilediğince sörf yap."),
   async execute(interaction) {
     const server = await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
 
@@ -21,24 +21,26 @@ export default new Command({
     const service: ServiceData = { id: nanoid(), categoryId: ids.none, channelId: ids.none, roleId: ids.none };
 
     /**
-     * Generates an array of interactive components for the setup view.
-     * 
-     * This function dynamically creates components based on the current configuration 
-     * values (_config) and interaction context. The components include category, channel, 
-     * role selectors, and a save button.
+     * Generates an array of action row components for a Discord message.
      *
-     * @returns {(ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[]} An array of interactive Discord components.
-     *   - The components include:
-     *     1. A category selector.
-     *     2. A channel selector with interaction context.
-     *     3. A role selector with interaction context.
-     *     4. A save button component.
+     * @param {boolean} [disabled=false] - Indicates whether the components should be disabled.
+     * @returns {(ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[]} An array of action rows, each containing specific components.
+     *
+     * The array contains the following components:
+     * - A category selection menu created by `getCategory`, configured with the given category ID and service category IDs.
+     * - A channel selection menu created by `getChannel`, configured with the given channel ID and interaction.
+     * - A role selection menu created by `getRole`, configured with the given role ID and interaction.
+     * - A save button created by `getSave`, optionally disabled.
+     *
+     * @example
+     * const components = getComponents(true);
+     * // Returns an array of disabled action row components
      */
-    const getComponents = (): (ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[] => [
-      getCategory({ id: service.categoryId, array: [...services.flatMap((service) => service.categoryId)] }),
-      getChannel({ id: service.channelId, interaction }),
-      getRole({ id: service.roleId, interaction }),
-      getSave(),
+    const getComponents = (disabled = false): (ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[] => [
+      getCategory({ id: service.categoryId, array: [...services.flatMap((service) => service.categoryId)], disabled }),
+      getChannel({ id: service.channelId, interaction, disabled }),
+      getRole({ id: service.roleId, interaction, disabled }),
+      getSave({ disabled }),
     ];
 
 
@@ -130,7 +132,7 @@ export default new Command({
               services: [...services as unknown as  InputJsonValue[], service as unknown as InputJsonValue],
             }
           });
-          await i.update({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))] });
+          await i.update({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: getComponents(true) });
         }
       })();
     });

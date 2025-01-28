@@ -6,17 +6,22 @@ import { trim } from "../functions/strings.js";
 import { ids } from "./constants.js";
 
 /**
- * Creates a category selection component as an Action Row for Discord.
+ * Generates a category selection menu for a Discord interaction.
  *
- * This component allows users to select a category from a dropdown menu. It highlights the currently selected category
- * and disables the dropdown if all categories are included.
+ * This menu allows users to select a category from the provided list. It excludes categories already in the provided array
+ * and highlights the currently selected category. The menu can be disabled if needed.
  *
- * @param {Object} props - The component's props.
- * @param {string} props.id - The currently selected category ID.
- * @param {string[]} props.array - An array of category IDs to include in the dropdown.
- * @returns {ActionRowBuilder<StringSelectMenuBuilder>} A configured ActionRowBuilder containing the category selection menu.
+ * @param {Object} params - The parameters for the category selection menu.
+ * @param {string} [params.id=ids.none] - The ID of the currently selected category. Defaults to `ids.none`.
+ * @param {string[]} [params.array=[]] - An array of category IDs to exclude from the menu.
+ * @param {boolean} [params.disabled=false] - Determines whether the menu is disabled.
+ * @returns {ActionRowBuilder<StringSelectMenuBuilder>} - An action row containing the category selection menu.
+ *
+ * @example
+ * // Create a category selection menu
+ * const categoryMenu = getCategory({ id: "1234567890", array: ["111", "222"], disabled: false });
  */
-export const getCategory = ({ id = ids.none, array = [] }: { id?: string; array?: string[] } = {}): ActionRowBuilder<StringSelectMenuBuilder> => {
+export const getCategory = ({ id = ids.none, array = [], disabled = false, }: { id?: string; array?: string[]; disabled?: boolean; } = {}): ActionRowBuilder<StringSelectMenuBuilder> => {
   const allCategories = getCategories();
   
   const categories = allCategories
@@ -32,7 +37,7 @@ export const getCategory = ({ id = ids.none, array = [] }: { id?: string; array?
 
   const builder = new StringSelectMenuBuilder()
     .setCustomId("categoryId")
-    .setDisabled(categories.length === 0)
+    .setDisabled(categories.length === 0 || disabled)
     .setOptions(
       new StringSelectMenuOptionBuilder()
         .setLabel("Kategori Ayarlaması")
@@ -46,13 +51,22 @@ export const getCategory = ({ id = ids.none, array = [] }: { id?: string; array?
 };
 
 /**
- * Creates a dropdown menu for channel selection with a maximum of 20 channels, excluding the current channel.
- * @param {Object} params - The parameters for the function.
- * @param {string} [params.id=ids.none] - The selected channel ID. Defaults to `ids.none`.
- * @param {ChatInputCommandInteraction} params.interaction - The interaction object from Discord.
- * @returns {ActionRowBuilder<StringSelectMenuBuilder>} A row containing a dropdown menu for channel selection.
+ * Generates a channel selection menu for a Discord interaction.
+ *
+ * This menu allows users to select a channel from the server, excluding the current interaction channel. It highlights the
+ * currently selected channel and includes an option for channel configuration. The menu can be disabled if needed.
+ *
+ * @param {Object} params - The parameters for the channel selection menu.
+ * @param {string} [params.id=ids.none] - The ID of the currently selected channel. Defaults to `ids.none`.
+ * @param {ChatInputCommandInteraction} params.interaction - The Discord interaction object to fetch guild channels.
+ * @param {boolean} [params.disabled=false] - Determines whether the menu is disabled.
+ * @returns {ActionRowBuilder<StringSelectMenuBuilder>} - An action row containing the channel selection menu.
+ *
+ * @example
+ * // Create a channel selection menu for a command interaction
+ * const channelMenu = getChannel({ id: "1234567890", interaction, disabled: false });
  */
-export const getChannel = ({ id = ids.none, interaction }: { id?: string; interaction: ChatInputCommandInteraction; }): ActionRowBuilder<StringSelectMenuBuilder> => {
+export const getChannel = ({ id = ids.none, interaction, disabled = false, }: { id?: string; interaction: ChatInputCommandInteraction; disabled?: boolean; }): ActionRowBuilder<StringSelectMenuBuilder> => {
   const channels = getChannels(interaction.guild)
     .slice(0, 20)
     .filter((channel) => channel.id !== interaction.channelId);
@@ -73,6 +87,7 @@ export const getChannel = ({ id = ids.none, interaction }: { id?: string; intera
 
   const menuBuilder = new StringSelectMenuBuilder()
     .setCustomId("channelId")
+    .setDisabled(disabled)
     .addOptions(
       new StringSelectMenuOptionBuilder()
         .setLabel("Kanal Ayarlaması")
@@ -101,12 +116,21 @@ export const getChannel = ({ id = ids.none, interaction }: { id?: string; intera
 /**
  * Generates a role selection menu for a Discord interaction.
  *
- * @param {Object} params - The parameters for the function.
- * @param {string} [params.id=ids.none] - The ID of the selected role.
- * @param {ChatInputCommandInteraction} params.interaction - The Discord interaction object.
+ * This menu allows users to select a role from the server. It includes default options like "Do not mention anyone",
+ * "@everyone", and "@here" alongside the first 20 roles fetched from the guild. The menu highlights the currently selected role
+ * and can be disabled if needed.
+ *
+ * @param {Object} params - The parameters for the role selection menu.
+ * @param {string} [params.id=ids.none] - The ID of the currently selected role. Defaults to `ids.none`.
+ * @param {ChatInputCommandInteraction} params.interaction - The Discord interaction object to fetch guild roles.
+ * @param {boolean} [params.disabled=false] - Determines whether the menu is disabled.
  * @returns {ActionRowBuilder<StringSelectMenuBuilder>} - An action row containing the role selection menu.
+ *
+ * @example
+ * // Create a role selection menu for a command interaction
+ * const roleMenu = getRole({ id: "1234567890", interaction, disabled: false });
  */
-export const getRole = ({ id = ids.none, interaction }: { id?: string; interaction: ChatInputCommandInteraction; }): ActionRowBuilder<StringSelectMenuBuilder> => {
+export const getRole = ({ id = ids.none, interaction, disabled = false, }: { id?: string; interaction: ChatInputCommandInteraction; disabled?: boolean; }): ActionRowBuilder<StringSelectMenuBuilder> => {
   const roles = getRoles(interaction.guild).slice(0, 20);
 
   const defaultOptions = [
@@ -160,25 +184,31 @@ export const getRole = ({ id = ids.none, interaction }: { id?: string; interacti
 
   const menuBuilder = new StringSelectMenuBuilder()
     .setCustomId("roleId")
+    .setDisabled(disabled)
     .addOptions(...defaultMenuOptions, ...roleOptions);
 
   return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
 };
 
 /**
- * Creates a "Save Changes" button with a custom ID, label, emoji, and primary style.
+ * Creates a "Save Changes" button with customizable enabled/disabled state.
  *
+ * @param {Object} params - The parameters for the button configuration.
+ * @param {boolean} params.disabled - Determines whether the button is disabled.
  * @returns {ActionRowBuilder<ButtonBuilder>} - An action row containing the "Save Changes" button.
  *
  * @example
- * // Generate the save button row
- * const saveButtonRow = getSave();
- * // Use this row in your Discord bot's message
- * await interaction.reply({ content: "Make changes and save:", components: [saveButtonRow] });
+ * // Generate an enabled save button row
+ * const saveButtonRow = getSave({ disabled: false });
+ * 
+ * @example
+ * // Generate a disabled save button row
+ * const saveButtonRow = getSave({ disabled: true });
  */
-export const getSave = (): ActionRowBuilder<ButtonBuilder> => {
+export const getSave = ({ disabled = false }: { disabled?: boolean; } = {}): ActionRowBuilder<ButtonBuilder> => {
   const btn = new ButtonBuilder()
     .setCustomId("save")
+    .setDisabled(disabled)
     .setLabel("Değişiklikleri Kaydet")
     .setStyle(ButtonStyle.Primary);
   return buttonRow([ btn ]);
