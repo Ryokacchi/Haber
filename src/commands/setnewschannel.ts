@@ -1,5 +1,5 @@
 import type { InputJsonValue } from "@prisma/client/runtime/library";
-import { type ActionRowBuilder, type ButtonBuilder, type ButtonInteraction, type ChannelSelectMenuInteraction, type MentionableSelectMenuInteraction, type RoleSelectMenuInteraction, type StringSelectMenuBuilder, type StringSelectMenuInteraction, type UserSelectMenuInteraction } from "discord.js";
+import { ApplicationIntegrationType, InteractionContextType, PermissionsBitField, type ActionRowBuilder, type ButtonBuilder, type ButtonInteraction, type ChannelSelectMenuInteraction, type MentionableSelectMenuInteraction, type RoleSelectMenuInteraction, type StringSelectMenuBuilder, type StringSelectMenuInteraction, type UserSelectMenuInteraction } from "discord.js";
 import { nanoid } from "nanoid";
 import { Command } from "../classes/command.js";
 import { prisma } from "../functions/dbConnection.js";
@@ -13,7 +13,10 @@ export default new Command({
   data: (builder) =>
     builder
       .setName("setnewschannel")
-      .setDescription("Sonsuz haber akışımızda, istediğin kategoriyi seçerek, dilediğince sörf yap."),
+      .setDescription("Sonsuz haber akışımızda, istediğin kategoriyi seçerek, dilediğince sörf yap.")
+      .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)
+      .setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
+      .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
     const server = await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
 

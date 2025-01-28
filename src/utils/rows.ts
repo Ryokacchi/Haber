@@ -3,6 +3,7 @@ import { buttonRow } from "../functions/general.js";
 import { getChannels, getRoles } from "../functions/guilds.js";
 import { getCategories } from "../functions/http.js";
 import { trim } from "../functions/strings.js";
+import type { ServiceData } from "../interfaces/prisma.types.js";
 import { ids } from "./constants.js";
 
 /**
@@ -186,6 +187,32 @@ export const getRole = ({ id = ids.none, interaction, disabled = false, }: { id?
     .setCustomId("roleId")
     .setDisabled(disabled)
     .addOptions(...defaultMenuOptions, ...roleOptions);
+
+  return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
+};
+
+export const getServicesByServer = ({ services, disabled = false }: { services: ServiceData[]; disabled?: boolean; }) => {
+  const serviceOptions = services.map((service) => {
+    const category = getCategories().find((find) => find.id === service.categoryId);
+    if (!category) return null;
+
+    return new StringSelectMenuOptionBuilder()
+      .setLabel(category.name)
+      .setEmoji("<:label:1287490763822731265>")
+      .setValue(category.id);
+  }).filter((val) => val !== null);
+
+  const menuBuilder = new StringSelectMenuBuilder()
+  .setCustomId("serviceId")
+  .setDisabled(disabled)
+  .addOptions(
+    new StringSelectMenuOptionBuilder()
+    .setLabel("Servis Silme Ayarlaması")
+    .setEmoji("<:1287500418380730408:1332691585569132675>")
+    .setDefault(true)
+    .setValue(ids.none),
+    ...serviceOptions
+  );
 
   return new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(menuBuilder);
 };
