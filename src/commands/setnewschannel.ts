@@ -5,6 +5,7 @@ import { Command } from "../classes/command.js";
 import { prisma } from "../functions/dbConnection.js";
 import { getResponseByState } from "../functions/strings.js";
 import type { ServiceData } from "../interfaces/prisma.types.js";
+import { servicesMap } from "../modules/variables.js";
 import { ids } from "../utils/constants.js";
 import { getCategory, getChannel, getRole, getSave } from "../utils/rows.js";
 import { ErrorView, LoadingView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
@@ -18,9 +19,10 @@ export default new Command({
       .setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
       .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
-    const server = await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
+    const cached = servicesMap.get(interaction.guild!.id);
+    const server = cached ?? await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
 
-    const services = (server?.services ?? []) as unknown as ServiceData[];
+    const services = Array.isArray(server) ? server : (server?.services ?? []) as unknown as ServiceData[];
     const service: ServiceData = { id: nanoid(), categoryId: ids.none, channelId: ids.none, roleId: ids.none };
 
     /**
@@ -130,6 +132,7 @@ export default new Command({
             return;
           }
 
+          servicesMap.set(interaction.guild!.id, [...services, service]);
           await prisma.servers.upsert({
             where: {
               server: interaction.guild!.id,

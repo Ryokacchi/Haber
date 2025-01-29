@@ -3,6 +3,7 @@ import { ApplicationIntegrationType, InteractionContextType, PermissionsBitField
 import { Command } from "../classes/command.js";
 import { prisma } from "../functions/dbConnection.js";
 import type { ServiceData } from "../interfaces/prisma.types.js";
+import { servicesMap } from "../modules/variables.js";
 import { getServicesByServer } from "../utils/rows.js";
 import { LoadingView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
 
@@ -15,8 +16,14 @@ export default new Command({
       .setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
       .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
-    const server = await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
-    let services = (server?.services ?? []) as unknown as ServiceData[];
+    const cached = servicesMap.get(interaction.guild!.id);
+    const server = cached ?? await prisma.servers.findUnique({ where: { server: interaction.guild!.id }, select: { services: true } });
+
+    let services = Array.isArray(server) ? server : (server?.services ?? []) as unknown as ServiceData[];
+
+    if (!cached && typeof cached === "undefined") {
+      servicesMap.set(interaction.guild!.id, [...services]);
+    }
 
     const message = await interaction.editReply({ embeds: [SetupView(interaction)], components: [getServicesByServer({ services, disabled: services.length === 0 })] });
 
@@ -54,9 +61,10 @@ export default new Command({
         const serviceId = i.values[0] as unknown as string;
         services = services.filter((service) => service.categoryId !== serviceId);
         
+        servicesMap.set(interaction.guild!.id, [...services]);
         await prisma.servers.update({
           where: { server: interaction.guild!.id },
-          data: { services: [ ...services as unknown as  InputJsonValue[] ] }
+          data: { services: [...services as unknown as  InputJsonValue[]] }
         });
         await interaction.editReply({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: [getServicesByServer({ services, disabled: services.length === 0 })] });
       })();
