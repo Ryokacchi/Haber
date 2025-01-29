@@ -4,7 +4,7 @@ import { Command } from "../classes/command.js";
 import { prisma } from "../functions/dbConnection.js";
 import type { ServiceData } from "../interfaces/prisma.types.js";
 import { getServicesByServer } from "../utils/rows.js";
-import { SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
+import { LoadingView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
 
 export default new Command({
   data: (builder) =>
@@ -40,20 +40,25 @@ export default new Command({
     const filter = (i: StringSelectMenuInteraction | UserSelectMenuInteraction | RoleSelectMenuInteraction | MentionableSelectMenuInteraction | ChannelSelectMenuInteraction | ButtonInteraction): boolean => i.user.id === interaction.user.id && message.id === i.message.id;
     const collector = message.createMessageComponentCollector({ filter, time: 60 * 1000 });
 
+    collector.on("end", () => {
+      void (async function() {
+        await interaction.editReply({ content: ":x: **-**  Mesaj süreniz doldu.", components: [getServicesByServer({ services, disabled: true })] }).catch(() => undefined);
+      });
+    });
+
     collector.on("collect", (i) => {
       void (async function() {
         if (!i.isStringSelectMenu()) return;
+        await i.update({ embeds: [SetupView(interaction), LoadingView(interaction)], components: [getServicesByServer({ services, disabled: true })] });
 
         const serviceId = i.values[0] as unknown as string;
         services = services.filter((service) => service.categoryId !== serviceId);
-
-        console.log({ serviceId, services });
         
         await prisma.servers.update({
           where: { server: interaction.guild!.id },
           data: { services: [ ...services as unknown as  InputJsonValue[] ] }
         });
-        await i.update({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: [getServicesByServer({ services, disabled: services.length === 0 })] });
+        await interaction.editReply({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: [getServicesByServer({ services, disabled: services.length === 0 })] });
       })();
     });
   }

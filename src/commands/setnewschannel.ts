@@ -7,7 +7,7 @@ import { getResponseByState } from "../functions/strings.js";
 import type { ServiceData } from "../interfaces/prisma.types.js";
 import { ids } from "../utils/constants.js";
 import { getCategory, getChannel, getRole, getSave } from "../utils/rows.js";
-import { ErrorView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
+import { ErrorView, LoadingView, SetupView, SuccessEmbed, withoutAuthor } from "../utils/views.js";
 
 export default new Command({
   data: (builder) =>
@@ -93,6 +93,12 @@ export default new Command({
     const filter = (i: StringSelectMenuInteraction | UserSelectMenuInteraction | RoleSelectMenuInteraction | MentionableSelectMenuInteraction | ChannelSelectMenuInteraction | ButtonInteraction): boolean => i.user.id === interaction.user.id && message.id === i.message.id;
     const collector = message.createMessageComponentCollector({ filter, time: 60 * 1000 });
 
+    collector.on("end", () => {
+      void (async function() {
+        await interaction.editReply({ content: ":x: **-**  Mesaj süreniz doldu.", components: getComponents(true) }).catch(() => undefined);
+      });
+    });
+
     collector.on("collect", (i) => {
       void (async function() {
         if (i.isStringSelectMenu() && ["categoryId", "channelId", "roleId"].includes(i.customId)) {
@@ -101,6 +107,7 @@ export default new Command({
         }
   
         if (i.isButton() && i.customId === "save") {
+          await i.update({ embeds: [SetupView(interaction), LoadingView(interaction)], components: getComponents(true) });
           // @ts-expect-error Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'ServiceData'
           const invalids = Object.keys(service).filter((key) => service[key] === ids.none) as (keyof ServiceData)[];
           const remaining = invalids.length - 1;
@@ -119,7 +126,7 @@ export default new Command({
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             const errorMessages = invalids.map((key) => errors[key]).join(", ");
 
-            await i.update({ embeds: [SetupView(interaction), withoutAuthor(ErrorView(interaction).setDescription(`Değişikliklerin ${stateResponse} tamamladın, ${taskResponse} ${errorMessages} kısmı kaldı.`))] });
+            await interaction.editReply({ embeds: [SetupView(interaction), withoutAuthor(ErrorView(interaction).setDescription(`Değişikliklerin ${stateResponse} tamamladın, ${taskResponse} ${errorMessages} kısmı kaldı.`))] });
             return;
           }
 
@@ -135,7 +142,7 @@ export default new Command({
               services: [...services as unknown as  InputJsonValue[], service as unknown as InputJsonValue],
             }
           });
-          await i.update({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: getComponents(true) });
+          await interaction.editReply({ embeds: [SetupView(interaction), withoutAuthor(SuccessEmbed(interaction).setDescription("Yapılan değişiklikler başarıyla kaydedildi ve veritabanına kaydedildi."))], components: getComponents(true) });
         }
       })();
     });
