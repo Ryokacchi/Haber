@@ -1,9 +1,39 @@
+import { parse } from "rss-to-json";
 export interface CategoryData {
   id: string;
   emoji?: string;
   name: string;
   description: string;
 }
+
+export interface ArticleData {
+  id: string;
+  title: string;
+  description: string;
+  published: number;
+  created: number;
+  category: string[];
+  enclosures: {
+    url: string;
+    length?: string;
+    type: string;
+    expression?: string;
+    width?: string;
+    height?: string;
+  }[];
+  media: {
+    thumbnail: {
+      url: string;
+      type: string;
+      expression?: string;
+      width?: string;
+      height?: string;
+    };
+  };
+}
+
+
+export const baseUrl = "https://www.ensonhaber.com/rss";
 
 /**
  * Returns an array of predefined news services with their details
@@ -39,4 +69,15 @@ export function getCategories(): CategoryData[] {
     { id: "magazin", name: "Magazin", description: "Ünlüler, dedikodular, etkinlikler ve sosyal yaşamdan en son haberler burada!" },
     { id: "kadin", name: "Kadın", description: "Kadın hakları, yaşam tarzı, sağlık, moda ve başarı hikayeleri bu bölümde!" },
   ];
+}
+
+/**
+ * Fetches and parses the category data from an XML source.
+ * 
+ * @param {string} id - The category ID to fetch.
+ * @returns {Promise<ArticleData[]>} A promise that resolves to an array of article data.
+ */
+export async function getCategory(id: string): Promise<ArticleData[]> {
+  const response = (await parse(`${baseUrl}/${id}.xml`)).items as unknown as ArticleData[];
+  return response;
 }

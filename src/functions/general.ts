@@ -1,5 +1,8 @@
 import type { ButtonBuilder, StringSelectMenuBuilder } from "@discordjs/builders";
 import { ActionRowBuilder, type AnyComponentBuilder } from "discord.js";
+import { promisify } from "util";
+
+export const wait = promisify(setTimeout);
 
 /**
  * Creates an action row with the given component builders
