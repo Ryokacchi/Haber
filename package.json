@@ -14,7 +14,7 @@
     "@eslint/js": "^9.14.0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/bytes": "^3.1.5",
-    "@types/eslint__js": "^8.42.3",
+    "@types/eslint__js": "^9.0.0",
     "@types/he": "^1.2.3",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.17.5",
