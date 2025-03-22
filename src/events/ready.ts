@@ -51,7 +51,7 @@ export default new Event({
                 .setTitle([title, punctuation].join(""))
                 .setDescription(description)
                 .setImage(article.media.thumbnail.url)
-                .setFooter({ text: `☁️ Bu haber ${moment(article.created).fromNow()} paylaşıldı.  •  ${client.user.username} tarafından destekleniyor.` });
+                .setFooter({ text: `☁️ ${client.user.username} tarafından destekleniyor.` });
               const content = roleMention(service.roleId);
 
               channel.send({ content, embeds: [ArticleEmbed] }).catch(tryAndCatch);
