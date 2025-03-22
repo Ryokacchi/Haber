@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { ActionRowBuilder, type AnyComponentBuilder } from "discord.js";
 import { promisify } from "util";
 import { eventLog } from "../modules/variables.js";
+import { config } from "./configLoader.js";
 
 export const wait = promisify(setTimeout);
 
@@ -68,3 +69,13 @@ export function roleMention(id: string): string  {
       return `<@&${id}>`;
   }
 }
+
+/**
+ * Checks if a given user ID belongs to a developer.
+ *
+ * @param {string} id - The user ID to check.
+ * @returns {boolean} True if the user is a developer, otherwise false.
+ */
+export function checkDeveloper(id: string): boolean {
+  return Array.isArray(config.bot.developers) && config.bot.developers.includes(id);
+};

@@ -8,7 +8,7 @@
     "start": "node -e 'console.clear()' && bun run ./src/infrastructure.ts"
   },
   "keywords": ["discord", "breakingnews"],
-  "author": "Roman",
+  "author": "Ryokacchi",
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "@eslint/js": "^9.14.0",
@@ -31,13 +31,13 @@
       "import": "./dist/infrastructure.mjs"
     }
   },
-  "homepage": "https://github.com/romanbaba/Haber#readme",
+  "homepage": "https://github.com/ryokacchi/Haber#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/romanbaba/Haber.git"
+    "url": "git+https://github.com/ryokacchi/Haber.git"
   },
   "bugs": {
-    "url": "https://github.com/romanbaba/Haber/issues"
+    "url": "https://github.com/ryokacchi/Haber/issues"
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",

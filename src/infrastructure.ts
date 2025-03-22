@@ -5,7 +5,7 @@ import { fileify } from "./functions/strings.js";
 import { botLog, shardLog } from "./modules/variables.js";
 
 const options: ShardingManagerOptions = {
-  totalShards: 1,
+  totalShards: 3,
   respawn: true,
   token: config.bot.token,
   execArgv: ["--import", "bun"],

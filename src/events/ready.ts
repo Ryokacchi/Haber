@@ -43,15 +43,14 @@ export default new Event({
 
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               const description = String(he.decode(trim(article.description, 4000)));
-              const title = trim(article.title, 120).trim();
-              const punctuation = (title.endsWith("yor") || title.endsWith("yorlar") ) ? "!" : ".";
+              const title = trim(article.title, 120).trim().replaceAll("SON DAKİKA!", "");
+              const punctuation = title.endsWith(".") || title.endsWith("!") ? "" : (title.endsWith("yor") || title.endsWith("yorlar") ) ? "!" : ".";
 
               const ArticleEmbed = new EmbedBuilder()
                 .setColor("#5865f2")
                 .setTitle([title, punctuation].join(""))
                 .setDescription(description)
-                .setImage(article.media.thumbnail.url)
-                .setFooter({ text: `☁️ ${client.user.username} tarafından destekleniyor.` });
+                .setImage(article.media.thumbnail.url);
               const content = roleMention(service.roleId);
 
               channel.send({ content, embeds: [ArticleEmbed] }).catch(tryAndCatch);
