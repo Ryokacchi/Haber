@@ -1,10 +1,11 @@
-import { Client, IntentsBitField, REST } from "discord.js";
+import { Client, IntentsBitField, PresenceUpdateStatus, REST } from "discord.js";
 import { config } from "../functions/configLoader.js";
 import { relaodCommands } from "./commands.js";
 import { reloadEvents } from "./events.js";
 
 export const client = new Client({
   intents: [IntentsBitField.Flags.Guilds],
+  presence: { status: PresenceUpdateStatus.Idle },
   failIfNotExists: true,
 });
 

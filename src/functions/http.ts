@@ -52,8 +52,6 @@ export const baseUrl = "https://www.ensonhaber.com/rss";
  */
 export function getCategories(): CategoryData[] {
   return [
-    { id: "ensonhaber", name: "En Son Haberler", description: "Günün öne çıkan haber başlıkları burada!" },
-    { id: "mansetler", name: "Manşetler", description: "Günün öne çıkan ve dikkat çeken haber başlıkları burada!" },
     { id: "gundem", name: "Gündem", description: "Kamuoyunun en çok konuştuğu ve ilgiyle takip ettiği konular burada!" },
     { id: "politika", name: "Politika", description: "Yerel ve küresel siyasetteki en önemli gelişmeler ve analizler burada!" },
     { id: "ekonomi", name: "Ekonomi", description: "Piyasalardaki son durum, finansal gelişmeler ve ekonomik analizler burada!" },
@@ -65,9 +63,7 @@ export function getCategories(): CategoryData[] {
     { id: "medya", name: "Medya", description: "Yayın dünyasındaki en son haberler, popüler programlar ve medya sektörüyle ilgili gelişmeler burada!" },
     { id: "yasam", name: "Yaşam", description: "Günlük yaşamın içinden ilham verici hikayeler, pratik ipuçları ve sağlıklı yaşam önerileri burada!" },
     { id: "kralspor", name: "Spor", description: "Takımlar, maç sonuçları, transfer haberleri ve spor dünyasındaki önemli gelişmeler burada!" },
-    { id: "3-sayfa", name: "3. Sayfa", description: "Şaşırtıcı, dikkat çeken ve bazen tartışma yaratan olaylar bu bölümde!" },
     { id: "magazin", name: "Magazin", description: "Ünlüler, dedikodular, etkinlikler ve sosyal yaşamdan en son haberler burada!" },
-    { id: "kadin", name: "Kadın", description: "Kadın hakları, yaşam tarzı, sağlık, moda ve başarı hikayeleri bu bölümde!" },
   ];
 }
 

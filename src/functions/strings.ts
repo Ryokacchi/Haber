@@ -1,3 +1,9 @@
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+export const __filename = fileURLToPath(import.meta.url);
+export const __dirname = dirname(__filename);
+
 /**
  * Trims a string to a specified maximum length and appends ellipsis ("...") if the string exceeds the maximum length.
  * 
@@ -24,6 +30,13 @@ export const trim = (str: string, max: number): string => str.length > max ? `${
  */
 export const and = (str: string): string => str.replace(/,(?=[^,]*$)/, " ve");
 
+/**
+ * Joins the current working directory with a given set of paths.
+ *
+ * @param {string[]} path - A list of path segments to join to the current working directory.
+ * @returns {string} The full file path after joining the current working directory with the provided segments.
+ */
+export const fileify = (...path: string[]): string => join(process.cwd(), "src", ...path);
 
 /**
  * Retrieves the element from an array based on the provided state index.

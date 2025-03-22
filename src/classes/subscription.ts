@@ -9,7 +9,7 @@ export class Subscription {
    * 
    * @param {string} id - The unique identifier for the subscription.
    */
-  constructor(private readonly id: string) {}
+  constructor(readonly id: string) {}
 
   /**
    * Checks for the latest article and executes the provided function if a new article is found.
@@ -23,11 +23,11 @@ export class Subscription {
 
     if (lastTime === 0) {
       func(article);
-    } else if (lastTime !== article.created) {
+    } else if (lastTime !== article.published) {
       func(article);
     }
 
-    await this.recheck(func, article.created);
+    await this.recheck(func, article.published);
   }
 
   /**
