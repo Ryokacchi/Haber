@@ -21,7 +21,7 @@ export default new Event({
     const clientId = client.user.id;
     await rest.put(Routes.applicationCommands(clientId), { body: getSlashBuilders() });
     
-    const activity: ActivitiesOptions = { name: clientId, state: `Shard #${String(client.shard?.ids[0])}`, type: ActivityType.Custom };
+    const activity: ActivitiesOptions = { name: clientId, state: `/help`, type: ActivityType.Custom };
     client.user.setPresence({
       status: PresenceUpdateStatus.Online,
       activities: [activity]
