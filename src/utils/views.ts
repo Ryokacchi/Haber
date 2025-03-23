@@ -116,7 +116,7 @@ export const BotInfoEmbed = async (interaction: ChatInputCommandInteraction): Pr
     const members = ((await interaction.client.shard?.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)) as unknown[] as number[]).reduce((acc, memberCount) => acc + memberCount, 0));
   
     const startNow = performance.now();
-    await prisma.$runCommandRaw({ ping: 1 });
+    await prisma.$runCommandRaw({ ping: 1 }).catch(() => null);
     const endNow = performance.now();
   
     return Embed(interaction)
